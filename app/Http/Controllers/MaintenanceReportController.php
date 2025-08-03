@@ -38,6 +38,17 @@ class MaintenanceReportController extends Controller
             'data' => $reports
         ]);
     }
+    public function createWithStore($storeId)
+{
+    $store = \App\Models\Store::findOrFail($storeId);
+    $technicians = \App\Models\User::where('role', 'technician')->get(); // Atur sesuai struktur datamu
+
+    return inertia('MaintenanceReport/Create', [
+        'store' => $store,
+        'technicians' => $technicians,
+    ]);
+}
+
 
     public function export(Request $request)
     {

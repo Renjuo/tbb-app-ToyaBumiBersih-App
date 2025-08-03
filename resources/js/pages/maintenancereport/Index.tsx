@@ -26,9 +26,13 @@ interface PaginatedData {
 
 interface Props {
     reports: PaginatedData;
+    filteredStore?: {
+        id: number;
+        name: string;
+    };
 }
 
-export default function Index({ reports }: Props) {
+export default function Index({ reports, filteredStore }: Props) {
     const getStatusBadge = (status: string) => {
         switch (status) {
             case 'approved':
@@ -49,8 +53,28 @@ export default function Index({ reports }: Props) {
                     {/* Header Section */}
                     <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                         <div className="space-y-2">
-                            <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Maintenance Reports</h1>
-                            <p className="text-sm text-slate-600 sm:text-base">Manage and track all maintenance activities across stores</p>
+                            <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+                                {filteredStore ? `Maintenance Reports - ${filteredStore.name}` : 'Maintenance Reports'}
+                            </h1>
+                            <p className="text-sm text-slate-600 sm:text-base">
+                                {filteredStore 
+                                    ? `Maintenance activities for ${filteredStore.name}` 
+                                    : 'Manage and track all maintenance activities across stores'
+                                }
+                            </p>
+                            {filteredStore && (
+                                <div className="flex items-center gap-2">
+                                    <Badge className="bg-cyan-100 text-cyan-800 border-cyan-200">
+                                        Filtered by Store
+                                    </Badge>
+                                    <Link 
+                                        href={route('maintenance.reports.index')}
+                                        className="text-sm text-cyan-600 hover:text-cyan-700 underline"
+                                    >
+                                        View All Reports
+                                    </Link>
+                                </div>
+                            )}
                         </div>
                         <Button
                             asChild

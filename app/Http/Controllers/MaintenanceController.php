@@ -89,16 +89,28 @@ class MaintenanceController extends Controller
         ]);
     }
     
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', MaintenanceReport::class);
         
-        $reports = MaintenanceReport::with(['store', 'technician'])
-            ->latest()
-            ->paginate(10);
+        $query = MaintenanceReport::with(['store', 'technician']);
+        
+        // Filter by store_id if provided (from QR scan)
+        if ($request->has('store_id')) {
+            $query->where('store_id', $request->store_id);
+        }
+        
+        $reports = $query->latest()->paginate(10);
+        
+        // Get store info if filtering by store
+        $store = null;
+        if ($request->has('store_id')) {
+            $store = Store::find($request->store_id);
+        }
             
         return Inertia::render('maintenancereport/Index', [
-            'reports' => $reports
+            'reports' => $reports,
+            'filteredStore' => $store
         ]);
     }
     

@@ -20,15 +20,16 @@ interface Technician {
 interface Props {
     stores?: Store[];
     technicians?: Technician[];
+    prefilled_store_id?: string;
 }
 
-export default function Create({ stores = [], technicians = [] }: Props) {
-    const { data, setData, post, processing, errors } = useForm({
-        store_id: '',
-        technician_id: '',
-        status: '',
-        date: '',
-        description: '',
+export default function Create({ stores = [], technicians = [], prefilled_store_id }: Props) {
+const { data, setData, post, processing, errors } = useForm({
+    store_id: prefilled_store_id || '', // <= autofill dari URL
+    technician_id: '',
+    status: '',
+    date: '',
+    description: '',
     });
 
     const handleSubmit = (e: React.FormEvent) => {
